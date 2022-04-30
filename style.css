@@ -14,8 +14,8 @@ body {
 }
 
 .container {
-	width: 270px;
-	height: 500px;
+	width: 350px;
+	padding: 11px;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -27,25 +27,36 @@ body {
 
 button {
 	cursor: pointer;
-	font-size: 2rem;
-	width: 60px;
-	height: 60px;
+	font-size: 2.5rem;
+	width: 80px;
+	height: 80px;
 	padding: 8px;
 	margin: 1px;
 	border: 0;
 	border-radius: 2px;
 	background-color: #333;
 	color: inherit;
+	transition: color 300ms ease, background-color 300ms ease;
+}
+
+.equals {
+	width: 160px;
+}
+
+button:hover {
+	color: #333;
+	background-color: white;
 }
 
 .display,
 .history {
 	background-color: #333;
 	border-radius: 2px;
-	width: 246px;
+	width: 326px;
+	height: 50px;
 	font-size: 1.5rem;
 	text-align: end;
-	padding: 8px;
+	padding: 8px 16px;
 }
 
 .history {
