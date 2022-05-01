@@ -27,7 +27,12 @@ let secondNum;
 
 nums.forEach((num) =>
 	num.addEventListener('click', () => {
-		if (typeof display.textContent !== 'number') {
+		if (
+			display.textContent === '+' ||
+			display.textContent === '-' ||
+			display.textContent === 'x' ||
+			display.textContent === '÷'
+		) {
 			display.textContent = '';
 			history.textContent += operationLog;
 		}
@@ -37,10 +42,18 @@ nums.forEach((num) =>
 );
 operations.forEach((operation) =>
 	operation.addEventListener('click', () => {
-		firstNum = display.textContent;
-		history.textContent += firstNum;
-		display.textContent = operation.textContent;
-		operationLog = operation.textContent;
+		if (
+			display.textContent !== '+' &&
+			display.textContent !== '-' &&
+			display.textContent !== 'x' &&
+			display.textContent !== '÷' &&
+			typeof +display.textContent === 'number'
+		) {
+			firstNum = display.textContent;
+			history.textContent += firstNum;
+			display.textContent = operation.textContent;
+			operationLog = operation.textContent;
+		}
 	})
 );
 
@@ -61,12 +74,12 @@ equals.addEventListener('click', () => {
 		if (operationLog === 'x')
 			operation = operate(multiply, +firstNum, +secondNum);
 
-		if (operationLog === '/')
+		if (operationLog === '÷')
 			operation = operate(divide, +firstNum, +secondNum);
+		if (!Number.isInteger(operation)) operation = operation.toFixed(2);
+		display.textContent = operation;
+		history.textContent += '=';
 	}
-	if (!Number.isInteger(operation)) operation = operation.toFixed(2);
-	display.textContent = operation;
-	history.textContent += '=';
 });
 
 clear.addEventListener('click', () => {

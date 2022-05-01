@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
 * {
 	margin: 0;
 	padding: 0;
@@ -11,6 +13,7 @@ body {
 	min-height: 100vh;
 	color: white;
 	background-color: #555;
+	font-family: 'Montserrat';
 }
 
 .container {
@@ -37,6 +40,7 @@ button {
 	background-color: #333;
 	color: inherit;
 	transition: color 300ms ease, background-color 300ms ease;
+	font-family: inherit;
 }
 
 .equals {
