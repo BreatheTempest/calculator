@@ -56,16 +56,16 @@ function numFunc(num) {
 	}
 	if (tooLong) alert('Number is too long!');
 
-	// if (equation !== '') {
-	// 	let previousAnswer = `${firstNum}${operationLog}${secondNum}=${equation}`;
-	// 	clearFunc();
-	// 	history.textContent = previousAnswer;
-	// }
-
 	if ((display.textContent === '0' && num !== '.') || isSign) {
 		display.textContent = '';
 		isSign = false;
 		isCalculate = false;
+	}
+	if (isCalculate && num !== '.') {
+		let previousAnswer = `${firstNum}${operationLog}${secondNum}=${equation}`;
+		clearFunc();
+		history.textContent = previousAnswer;
+		display.textContent = '';
 	}
 	if (num !== '.' && !tooLong) display.textContent += num;
 	if (num === '.' && !display.textContent.includes('.'))
