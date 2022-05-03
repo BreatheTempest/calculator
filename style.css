@@ -57,10 +57,11 @@ button:hover {
 	background-color: #333;
 	border-radius: 2px;
 	width: 326px;
-	height: 50px;
+	min-height: 50px;
 	font-size: 1.5rem;
 	text-align: end;
 	padding: 8px 16px;
+	white-space: normal;
 }
 
 .history {

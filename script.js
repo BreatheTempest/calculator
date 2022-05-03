@@ -28,72 +28,92 @@ let isCalculate = false;
 let equation = '';
 let secondNum;
 
+function clearFunc() {
+	firstNum = '';
+	secondNum = '';
+	operationLog = '';
+	equation = '';
+	history.textContent = '';
+	display.textContent = '';
+	isSign = false;
+	isCalculate = false;
+}
+
+clear.addEventListener('click', clearFunc);
+
+function numFunc(num) {
+	if (num === '.' && display.textContent === '') {
+		display.textContent += '0';
+	}
+	// if (equation !== '') {
+	// 	let previousAnswer = `${firstNum}${operationLog}${secondNum}=${equation}`;
+	// 	clearFunc();
+	// 	history.textContent = previousAnswer;
+	// }
+	if ((display.textContent === '0' && num !== '.') || isSign) {
+		display.textContent = '';
+		isSign = false;
+		isCalculate = false;
+	}
+	display.textContent += num;
+}
+
 nums.forEach((num) =>
-	num.addEventListener('click', () => {
-		// if (
-		// 	display.textContent === '+' ||
-		// 	display.textContent === '-' ||
-		// 	display.textContent === 'x' ||
-		// 	display.textContent === '÷'
-		// ) {
-		// 	display.textContent = '';
-		// 	history.textContent += operationLog;
-		// }
-		if ((display.textContent === '0' && num.textContent !== '.') || isSign) {
-			display.textContent = '';
-			isSign = false;
-			isCalculate = false;
-		}
-		display.textContent += num.textContent;
-	})
+	num.addEventListener('click', () => numFunc(num.textContent))
 );
 
+function signFunc(sign) {
+	if (
+		typeof +display.textContent === 'number' &&
+		typeof +firstNum === 'number' &&
+		operationLog !== '' &&
+		!isCalculate &&
+		!isSign
+	) {
+		calculate();
+		isCalculate = true;
+		history.textContent += sign;
+		equation = display.textContent;
+	}
+	// } else if (
+	// 	display.textContent !== '+' &&
+	// 	display.textContent !== '-' &&
+	// 	display.textContent !== 'x' &&
+	// 	display.textContent !== '÷' &&
+	// 	typeof +display.textContent === 'number'
+	// ) {
+	// 	firstNum = display.textContent;
+	// 	history.textContent += firstNum;
+	// 	display.textContent = sign;
+	// 	operationLog = sign;
+	// }
+	// if (isSign) {
+	// 	history.textContent = history.textContent.slice(
+	// 		0,
+	// 		history.textContent.length - 1
+	// 	);
+	// 	operationLog = sign;
+	// 	history.textContent += operationLog;
+	// }
+	if (isCalculate) {
+		console.log('after equation');
+		firstNum = equation;
+		history.textContent = display.textContent + sign;
+		operationLog = sign;
+		isSign = true;
+	}
+	if (!isSign) {
+		console.log('assign');
+		history.textContent = '';
+		firstNum = display.textContent;
+		history.textContent += firstNum + sign;
+		operationLog = sign;
+		isSign = true;
+	}
+}
+
 operations.forEach((operation) =>
-	operation.addEventListener('click', () => {
-		if (
-			typeof +display.textContent === 'number' &&
-			typeof +firstNum === 'number' &&
-			operationLog !== '' &&
-			!isCalculate
-		) {
-			calculate();
-			isCalculate = true;
-			history.textContent += operation.textContent;
-			equation = display.textContent;
-		}
-		// } else if (
-		// 	display.textContent !== '+' &&
-		// 	display.textContent !== '-' &&
-		// 	display.textContent !== 'x' &&
-		// 	display.textContent !== '÷' &&
-		// 	typeof +display.textContent === 'number'
-		// ) {
-		// 	firstNum = display.textContent;
-		// 	history.textContent += firstNum;
-		// 	display.textContent = operation.textContent;
-		// 	operationLog = operation.textContent;
-		// }
-		// if (isSign) {
-		// 	history.textContent = history.textContent.slice(
-		// 		0,
-		// 		history.textContent.length - 1
-		// 	);
-		// 	operationLog = operation.textContent;
-		// 	history.textContent += operationLog;
-		// }
-		if (isCalculate) {
-			firstNum = equation;
-			history.textContent = display.textContent + operation.textContent;
-			operationLog = operation.textContent;
-			isSign = true;
-		}
-		if (!isSign) {
-			firstNum = display.textContent;
-			history.textContent += firstNum + operation.textContent;
-			operationLog = operation.textContent;
-			isSign = true;
-		}
-	})
+	operation.addEventListener('click', () => signFunc(operation.textContent))
 );
 
 equals.addEventListener('click', () => {
@@ -108,14 +128,6 @@ equals.addEventListener('click', () => {
 		history.textContent += '=';
 		equation = display.textContent;
 	}
-});
-
-clear.addEventListener('click', () => {
-	firstNum = '';
-	secondNum = '';
-	operationLog = '';
-	history.textContent = '';
-	display.textContent = '0';
 });
 
 function calculate() {
@@ -134,3 +146,14 @@ function calculate() {
 	if (!Number.isInteger(operation)) operation = operation.toFixed(2);
 	display.textContent = operation;
 }
+
+document.addEventListener('keydown', (e) => {
+	let key = e.key;
+	if (key === 'Delete') clearFunc();
+	if (key.match(/\d/)) numFunc(key);
+	if (key.match(/[\+\-\*\/]/)) {
+		if (key === '/') key = '÷';
+		if (key === '*') key = 'x';
+		signFunc(key);
+	}
+});
