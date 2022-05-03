@@ -25,6 +25,7 @@ let firstNum;
 let operationLog = '';
 let isSign = false;
 let isCalculate = false;
+let equation = '';
 let secondNum;
 
 nums.forEach((num) =>
@@ -49,12 +50,17 @@ nums.forEach((num) =>
 
 operations.forEach((operation) =>
 	operation.addEventListener('click', () => {
-		// if (
-		// 	typeof +display.textContent === 'number' &&
-		// 	typeof +firstNum === 'number' &&
-		// 	operationLog !== ''
-		// ) {
-		// 	calculate();
+		if (
+			typeof +display.textContent === 'number' &&
+			typeof +firstNum === 'number' &&
+			operationLog !== '' &&
+			!isCalculate
+		) {
+			calculate();
+			isCalculate = true;
+			history.textContent += operation.textContent;
+			equation = display.textContent;
+		}
 		// } else if (
 		// 	display.textContent !== '+' &&
 		// 	display.textContent !== '-' &&
@@ -67,6 +73,20 @@ operations.forEach((operation) =>
 		// 	display.textContent = operation.textContent;
 		// 	operationLog = operation.textContent;
 		// }
+		// if (isSign) {
+		// 	history.textContent = history.textContent.slice(
+		// 		0,
+		// 		history.textContent.length - 1
+		// 	);
+		// 	operationLog = operation.textContent;
+		// 	history.textContent += operationLog;
+		// }
+		if (isCalculate) {
+			firstNum = equation;
+			history.textContent = display.textContent + operation.textContent;
+			operationLog = operation.textContent;
+			isSign = true;
+		}
 		if (!isSign) {
 			firstNum = display.textContent;
 			history.textContent += firstNum + operation.textContent;
@@ -86,6 +106,7 @@ equals.addEventListener('click', () => {
 		calculate();
 		isCalculate = true;
 		history.textContent += '=';
+		equation = display.textContent;
 	}
 });
 
