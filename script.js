@@ -26,14 +26,16 @@ const operations = document.querySelectorAll('.operation');
 const display = document.querySelector('.display');
 const history = document.querySelector('.history');
 const clear = document.querySelector('.clear');
+const deleteKey = document.querySelector('.delete');
 const equals = document.querySelector('.equals');
 
-let firstNum;
+let firstNum = '';
 let operationLog = '';
 let isSign = false;
 let isCalculate = false;
 let equation = '';
 let secondNum;
+let ready = false;
 
 function clearFunc() {
 	firstNum = '';
@@ -44,31 +46,35 @@ function clearFunc() {
 	display.textContent = '0';
 	isSign = false;
 	isCalculate = false;
+	ready = false;
 }
 
 clear.addEventListener('click', clearFunc);
 
 function numFunc(num) {
 	let tooLong = display.textContent.length === 13;
-	if ((num === '.' && display.textContent === '') || isSign) {
-		console.log('.');
-		display.textContent += '0';
-	}
 	if (tooLong) alert('Number is too long!');
+
+	if (firstNum !== '') ready = true;
 
 	if ((display.textContent === '0' && num !== '.') || isSign) {
 		display.textContent = '';
 		isSign = false;
 		isCalculate = false;
 	}
-	if (isCalculate && num !== '.') {
+	if (isCalculate && num) {
 		let previousAnswer = `${firstNum}${operationLog}${secondNum}=${equation}`;
 		clearFunc();
 		history.textContent = previousAnswer;
 		display.textContent = '';
 	}
 	if (num !== '.' && !tooLong) display.textContent += num;
-	if (num === '.' && !display.textContent.includes('.'))
+
+	if (num === '.' && display.textContent === '') {
+		display.textContent = '0';
+	}
+
+	if (num === '.' && !display.textContent.includes('.') && !tooLong)
 		display.textContent += num;
 }
 
@@ -88,6 +94,11 @@ function calculate() {
 
 	if (operationLog === 'x')
 		operation = operate(multiply, +firstNum, +secondNum);
+
+	if (operationLog === '÷' && secondNum === '0') {
+		alert('Why would you do that?');
+		return;
+	}
 
 	if (operationLog === '÷') operation = operate(divide, +firstNum, +secondNum);
 
@@ -113,35 +124,20 @@ function signFunc(sign) {
 		history.textContent += sign;
 		equation = display.textContent;
 	}
-	// } else if (
-	// 	display.textContent !== '+' &&
-	// 	display.textContent !== '-' &&
-	// 	display.textContent !== 'x' &&
-	// 	display.textContent !== '÷' &&
-	// 	typeof +display.textContent === 'number'
-	// ) {
-	// 	firstNum = display.textContent;
-	// 	history.textContent += firstNum;
-	// 	display.textContent = sign;
-	// 	operationLog = sign;
-	// }
-	// if (isSign) {
-	// 	history.textContent = history.textContent.slice(
-	// 		0,
-	// 		history.textContent.length - 1
-	// 	);
-	// 	operationLog = sign;
-	// 	history.textContent += operationLog;
-	// }
+
 	if (isCalculate) {
-		console.log('after equation');
 		firstNum = equation;
 		history.textContent = display.textContent + sign;
 		operationLog = sign;
 		isSign = true;
 	}
+
+	if (isSign) {
+		history.textContent = display.textContent + sign;
+		operationLog = sign;
+	}
+
 	if (!isSign) {
-		console.log('assign');
 		history.textContent = '';
 		firstNum = display.textContent;
 		history.textContent += firstNum + sign;
@@ -154,28 +150,44 @@ operations.forEach((operation) =>
 	operation.addEventListener('click', () => signFunc(operation.textContent))
 );
 
-equals.addEventListener('click', () => {
+function equalsFunc() {
 	if (
 		typeof +display.textContent === 'number' &&
 		typeof +firstNum === 'number' &&
 		operationLog !== '' &&
-		!isCalculate
+		!isCalculate &&
+		ready
 	) {
 		calculate();
 		isCalculate = true;
 		history.textContent += '=';
 		equation = display.textContent;
+		console.log(firstNum, operationLog, secondNum, '=', equation);
 	}
-});
+}
+
+equals.addEventListener('click', equalsFunc);
+
+function deleteNum() {
+	display.textContent = display.textContent
+		.split('')
+		.splice(0, display.textContent.length - 1)
+		.join('');
+	if (display.textContent === '') display.textContent = 0;
+}
+
+deleteKey.addEventListener('click', deleteNum);
 
 // Keyboard input
 document.addEventListener('keydown', (e) => {
 	let key = e.key;
 	if (key === 'Delete') clearFunc();
 	if (key.match(/[\d\.]/)) numFunc(key);
-	if (key.match(/[\+\-\*\/]/)) {
+	if (key.match(/[\+\-\*\/^]/)) {
 		if (key === '/') key = '÷';
 		if (key === '*') key = 'x';
 		signFunc(key);
 	}
+	if (key === '=') equalsFunc();
+	if (key === 'Backspace') deleteNum();
 });
