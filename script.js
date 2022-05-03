@@ -10,6 +10,13 @@ function multiply(num1, num2) {
 function divide(num1, num2) {
 	return num1 / num2;
 }
+function exponential(num1, num2) {
+	let num = num1;
+	for (let i = 1; i < num2; i++) {
+		num *= num1;
+	}
+	return num;
+}
 function operate(func, num1, num2) {
 	return func(num1, num2);
 }
@@ -34,7 +41,7 @@ function clearFunc() {
 	operationLog = '';
 	equation = '';
 	history.textContent = '';
-	display.textContent = '';
+	display.textContent = '0';
 	isSign = false;
 	isCalculate = false;
 }
@@ -42,25 +49,56 @@ function clearFunc() {
 clear.addEventListener('click', clearFunc);
 
 function numFunc(num) {
-	if (num === '.' && display.textContent === '') {
+	let tooLong = display.textContent.length === 13;
+	if ((num === '.' && display.textContent === '') || isSign) {
+		console.log('.');
 		display.textContent += '0';
 	}
+	if (tooLong) alert('Number is too long!');
+
 	// if (equation !== '') {
 	// 	let previousAnswer = `${firstNum}${operationLog}${secondNum}=${equation}`;
 	// 	clearFunc();
 	// 	history.textContent = previousAnswer;
 	// }
+
 	if ((display.textContent === '0' && num !== '.') || isSign) {
 		display.textContent = '';
 		isSign = false;
 		isCalculate = false;
 	}
-	display.textContent += num;
+	if (num !== '.' && !tooLong) display.textContent += num;
+	if (num === '.' && !display.textContent.includes('.'))
+		display.textContent += num;
 }
 
 nums.forEach((num) =>
 	num.addEventListener('click', () => numFunc(num.textContent))
 );
+
+function calculate() {
+	let operation;
+	secondNum = display.textContent;
+	history.textContent += secondNum;
+
+	if (operationLog === '+') operation = operate(add, +firstNum, +secondNum);
+
+	if (operationLog === '-')
+		operation = operate(subtract, +firstNum, +secondNum);
+
+	if (operationLog === 'x')
+		operation = operate(multiply, +firstNum, +secondNum);
+
+	if (operationLog === '÷') operation = operate(divide, +firstNum, +secondNum);
+
+	if (operationLog === '^')
+		operation = operate(exponential, +firstNum, +secondNum);
+
+	if (!Number.isInteger(operation)) {
+		operation = Number(operation.toFixed(5));
+	}
+	display.textContent = operation;
+}
 
 function signFunc(sign) {
 	if (
@@ -130,27 +168,11 @@ equals.addEventListener('click', () => {
 	}
 });
 
-function calculate() {
-	let operation;
-	secondNum = display.textContent;
-	history.textContent += secondNum;
-	if (operationLog === '+') operation = operate(add, +firstNum, +secondNum);
-
-	if (operationLog === '-')
-		operation = operate(subtract, +firstNum, +secondNum);
-
-	if (operationLog === 'x')
-		operation = operate(multiply, +firstNum, +secondNum);
-
-	if (operationLog === '÷') operation = operate(divide, +firstNum, +secondNum);
-	if (!Number.isInteger(operation)) operation = operation.toFixed(2);
-	display.textContent = operation;
-}
-
+// Keyboard input
 document.addEventListener('keydown', (e) => {
 	let key = e.key;
 	if (key === 'Delete') clearFunc();
-	if (key.match(/\d/)) numFunc(key);
+	if (key.match(/[\d\.]/)) numFunc(key);
 	if (key.match(/[\+\-\*\/]/)) {
 		if (key === '/') key = '÷';
 		if (key === '*') key = 'x';
