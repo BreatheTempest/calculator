@@ -173,7 +173,8 @@ function deleteNum() {
 		.split('')
 		.splice(0, display.textContent.length - 1)
 		.join('');
-	if (display.textContent === '') display.textContent = 0;
+	if (display.textContent === '' || display.textContent === '-')
+		display.textContent = 0;
 }
 
 deleteKey.addEventListener('click', deleteNum);
