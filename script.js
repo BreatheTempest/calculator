@@ -52,8 +52,12 @@ function clearFunc() {
 clear.addEventListener('click', clearFunc);
 
 function numFunc(num) {
-	let tooLong = display.textContent.length === 13;
-	if (tooLong) alert('Number is too long!');
+	// let tooLong = display.textContent.length === 13;
+
+	// if (tooLong) {
+	// 	if (firstNum !== '') display.textContent = 'hello';
+	// 	else alert('Number is too long!');
+	// }
 
 	if (firstNum !== '') ready = true;
 
@@ -68,13 +72,13 @@ function numFunc(num) {
 		history.textContent = previousAnswer;
 		display.textContent = '';
 	}
-	if (num !== '.' && !tooLong) display.textContent += num;
+	if (num !== '.') display.textContent += num;
 
 	if (num === '.' && display.textContent === '') {
 		display.textContent = '0';
 	}
 
-	if (num === '.' && !display.textContent.includes('.') && !tooLong)
+	if (num === '.' && !display.textContent.includes('.'))
 		display.textContent += num;
 }
 
