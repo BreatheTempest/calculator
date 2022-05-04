@@ -162,13 +162,20 @@ function equalsFunc() {
 		isCalculate = true;
 		history.textContent += '=';
 		equation = display.textContent;
-		console.log(firstNum, operationLog, secondNum, '=', equation);
+		// console.log(firstNum, operationLog, secondNum, '=', equation);
 	}
 }
 
 equals.addEventListener('click', equalsFunc);
 
 function deleteNum() {
+	if (isCalculate) {
+		let previousAnswer = `${equation}`;
+		let temp = equation;
+		clearFunc();
+		history.textContent = previousAnswer;
+		display.textContent = temp;
+	}
 	display.textContent = display.textContent
 		.split('')
 		.splice(0, display.textContent.length - 1)
